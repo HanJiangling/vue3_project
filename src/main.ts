@@ -4,6 +4,7 @@ import router from "./router";
 import store from "./store";
 import "./styles/index.scss";
 import "@/styles/color/index.scss";
+//全局引入Element-ui
 import ElementPlus from "element-plus";
 import "element-plus/lib/theme-chalk/index.css";
 // 国际化

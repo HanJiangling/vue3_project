@@ -1,7 +1,7 @@
 import { createRouter, createWebHashHistory, RouteRecordRaw } from "vue-router";
 import store from "@/store/index";
 //进度条
-import NProgress from 'nprogress' ;
+import NProgress from 'nprogress';
 import 'nprogress/nprogress.css';
 const routes: Array<RouteRecordRaw> = [
     {
@@ -9,7 +9,7 @@ const routes: Array<RouteRecordRaw> = [
         name: "login",
         component: () => import("@/views/login/login.vue"),
     },
-   
+
 ];
 
 const router = createRouter({
@@ -24,9 +24,9 @@ router.beforeEach((to: any, from: any, next: any) => {
         return next({ path: "/login" });
     };
     //已登陆
-    if(window.localStorage.getItem("token")&&to.path == "/login") return next({ path: "/" });
+    if (window.localStorage.getItem("token") && to.path == "/login") return next({ path: "/" });
     //重新加载动态路由
-    if (!store.state.permissionList&&to.path!='/login') {
+    if (!store.state.permissionList && to.path != '/login') {
         // router.removeRoute('router');
         return store.dispatch("FETCH_PERMISSION").then(() => {
             next({ ...to, replace: true });
@@ -42,7 +42,7 @@ router.afterEach((to: any, from: any, next: any) => {
         if (to.meta.name) {
             document.title = to.meta.name;
         }
-    } catch (err) {}
+    } catch (err) { }
     let routerList = to.matched;
     //顶部面包屑
     store.commit("setCrumbList", routerList);
@@ -56,11 +56,11 @@ router.afterEach((to: any, from: any, next: any) => {
         icon:侧边栏图标,
         hide:是否在侧边栏隐藏
     }
-*/ 
+*/
 export const DynamicRoutes = [
     {
         path: "",
-        component:  () => import("@/components/nav/nav.vue"),
+        component: () => import("@/components/nav/nav.vue"),
         name: "container",
         // redirect: 'home',
         meta: {
@@ -77,16 +77,7 @@ export const DynamicRoutes = [
                     icon: "el-icon-s-home",
                 },
             },
-            {
-                path: "router",
-                component: () => import("@/views/router/router.vue"),
-                name: "router",
-                meta: {
-                    name: "路由管理",
-                    icon: "el-icon-guide",
-                    hide:false
-                },
-            },
+            // 主题管理
             {
                 path: "color",
                 component: () => import("@/views/color/color.vue"),
@@ -96,200 +87,94 @@ export const DynamicRoutes = [
                     icon: "el-icon-brush",
                 },
             },
+            //权限管理
             {
-                path: "language",
-                component: () => import("@/views/language/language.vue"),
-                name: "language",
+                path: "acl",
+                component: () => import("@/views/acl/index.vue"),
+                name: "acl",
                 meta: {
-                    name: "国际化",
-                    icon: "el-icon-s-flag",
+                    name: "权限管理",
+                    icon: "el-icon-lock",
                 },
-            },
-            {
-                path: "icon",
-                component: () => import("@/views/icon/index.vue"),
-                name: "icon",
-                meta: {
-                    name: "图标管理",
-                    icon: "el-icon-picture-outline-round",
-                },
-                children:[
+                children: [
+                    // 支部管理员
                     {
-                        path: "elicon",
-                        component: () => import("@/views/icon/el-icon.vue"),
-                        name: "elicon",
+                        path: "user/list",
+                        component: () => import("@/views/acl/user/list.vue"),
+                        name: "user/list",
                         meta: {
-                            name: "Element图标",
-                            icon: "el-icon-caret-bottom",
-                            // hide:true
+                            name: "支部管理员",
+                            icon: "el-icon-user",
                         },
                     },
+                    //角色管理员
                     {
-                        path: "aliicon",
-                        component: () => import("@/views/icon/ali-icon.vue"),
-                        name: "aliicon",
+                        path: "role/list",
+                        component: () => import("@/views/acl/role/list.vue"),
+                        name: "role/list",
                         meta: {
-                            name: "阿里图标",
-                            icon: "el-icon-caret-top",
+                            name: "角色管理员",
+                            icon: "el-icon-setting",
                         },
-                    }
-                ]
-            },
-            {
-                path: "table",
-                component: () => import("@/views/table/index.vue"),
-                name: "table",
-                meta: {
-                    name: "表格管理",
-                    icon: "el-icon-s-grid",
-                },
-                children:[
+                    },
+                    //权限节点
                     {
-                        path: "basics",
-                        component: () => import("@/views/table/basics.vue"),
-                        name: "basics",
+                        path: "permission/list",
+                        component: () => import("@/views/acl/permission/list.vue"),
+                        name: "permission/list",
                         meta: {
-                            name: "基础表格",
+                            name: "权限节点",
                             icon: "el-icon-menu",
                         },
-                    },
+                    }
+                ]
+            },
+            //党员和会议管理
+            {
+                path: "member",
+                component: () => import("@/views/member/index.vue"),
+                name: "member",
+                meta: {
+                    name: "党员和会议管理",
+                    icon: "el-icon-house",
+                },
+                children: [
+                    // 党员信息管理
                     {
-                        path: "complex",
-                        component: () => import("@/views/table/complex.vue"),
-                        name: "complex",
+                        path: "users/list",
+                        component: () => import("@/views/member/users/list.vue"),
+                        name: "users/list",
                         meta: {
-                            name: "复杂表格",
-                            icon: "el-icon-s-grid",
+                            name: "党员信息管理",
+                            icon: "el-icon-user",
+                        },
+                    },
+                    // 批量导入
+                    {
+                        path: "allimport/list",
+                        component: () => import("@/views/member/allimport/list.vue"),
+                        name: "allimport/list",
+                        meta: {
+                            name: "批量导入",
+                            icon: "el-icon-plus",
+                        },
+                    },
+                    //会议管理
+                    {
+                        path: "meeting/list",
+                        component: () => import("@/views/member/meeting/list.vue"),
+                        name: "meeting/list",
+                        meta: {
+                            name: "会议管理",
+                            icon: "el-icon-more",
                         },
                     }
                 ]
             },
-            {
-                path: "chart",
-                component: () => import("@/views/chart/index.vue"),
-                name: "chart",
-                meta: {
-                    name: "图表示例",
-                    icon: "el-icon-s-data",
-                },
-                children:[
-                    {
-                        path: "column",
-                        component: () => import("@/views/chart/column.vue"),
-                        name: "column",
-                        meta: {
-                            name: "柱形图表",
-                            icon: "el-icon-s-data",
-                        },
-                    },
-                    {
-                        path: "line",
-                        component: () => import("@/views/chart/line.vue"),
-                        name: "line",
-                        meta: {
-                            name: "折线图表",
-                            icon: "el-icon-minus",
-                        },
-                    },
-                    {
-                        path: "more",
-                        component: () => import("@/views/chart/more.vue"),
-                        name: "more",
-                        meta: {
-                            name: "其他图表",
-                            icon: "el-icon-s-operation",
-                        },
-                    },
-                ]
-            },
-            {
-                path: "text",
-                component: () => import("@/views/text/text.vue"),
-                name: "text",
-                meta: {
-                    name: "富文本编辑器",
-                    icon: "el-icon-document",
-                },
-            },
-            {
-                path: "uploading",
-                component: () => import("@/views/uploading/uploading.vue"),
-                name: "uploading",
-                meta: {
-                    name: "自定义图片上传",
-                    icon: "el-icon-upload",
-                },
-            },
-            {
-                path: "map",
-                component: () => import("@/views/map/index.vue"),
-                name: "map",
-                meta: {
-                    name: "地图",
-                    icon: "el-icon-map-location",
-                },
-                children:[
-                    {
-                        path: "baidu",
-                        component: () => import("@/views/map/baidu.vue"),
-                        name: "baidu",
-                        meta: {
-                            name: "百度地图",
-                            icon: "el-icon-guide",
-                        },
-                    },
-                    {
-                        path: "autoNavi",
-                        component: () => import("@/views/map/autoNavi.vue"),
-                        name: "autoNavi",
-                        meta: {
-                            name: "高德地图",
-                            icon: "el-icon-position",
-                        },
-                    }
-                ]
-            },
-            {
-                path: "contact",
-                component: () => import("@/views/contact/contact.vue"),
-                name: "contact",
-                meta: {
-                    name: "联系我们",
-                    icon: "el-icon-phone",
-                },
-            },
-            {
-                path: "else",
-                component: () => import("@/views/else/index.vue"),
-                name: "else",
-                meta: {
-                    name: "其他组件",
-                    icon: "el-icon-question",
-                },
-                children:[
-                    {
-                        path: "convas",
-                        component: () => import("@/views/else/canvas.vue"),
-                        name: "convas",
-                        meta: {
-                            name: "页面生成图片",
-                            icon: "el-icon-picture-outline",
-                        },
-                    },
-                    {
-                        path: "code",
-                        component: () => import("@/views/else/code.vue"),
-                        name: "code",
-                        meta: {
-                            name: "动态二维码",
-                            icon: "el-icon-full-screen",
-                        },
-                    }
-                ]
-            }
-            
+
+
         ]
-        
+
     }
 ];
 

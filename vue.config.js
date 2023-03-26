@@ -35,7 +35,16 @@ module.exports = {
             })
             .end()
     },
-    devServer:{
-        open:true
+    devServer: {
+        proxy: {
+            '/api': {
+                target: 'http://www.djxts.com:80',
+                changeOrigin: true,
+                pathRewrite: {
+                    '/api': ''
+                }
+            }
+        },
+        open: true
     }
 }

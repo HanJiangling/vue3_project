@@ -1,5 +1,5 @@
 // 后端路由
-import permissionList from "@/utils/permission";
+// import permissionList from "@/utils/permission";
 import { setDefaultRoute } from "@/utils/recursion-router";
 //固定路由
 import router, { DynamicRoutes } from "@/router/index";
@@ -46,7 +46,7 @@ function clone(data: any): any {
 const actions = {
     async FETCH_PERMISSION({ commit }: any) {
         //处理需要动态的路由
-        let routes: Array<any> = filterAsyncRouter(permissionList);
+        // let routes: Array<any> = filterAsyncRouter(permissionList);
         //不需要动态的路由（深拷贝）
         let MainContainer = clone(DynamicRoutes).find(
             (v: any) => v.path === ""
@@ -54,7 +54,7 @@ const actions = {
         let children: Array<any> = [];
         children = MainContainer.children;
         //将两种路由结合生成左边的导航栏
-        children = children.concat(routes);
+        children = children.concat();
         commit("SET_MENU", children);
         MainContainer.children = children;
         /*
